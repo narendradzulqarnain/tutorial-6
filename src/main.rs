@@ -13,19 +13,21 @@ use std::{
    }
    fn handle_connection(mut stream: TcpStream) {
     let buf_reader = BufReader::new(&mut stream);
-    let request_line = buf_reader.lines().next().unwrap().unwrap();
+    let http_request: Vec<_> = buf_reader
+    .lines() .map(|result| result.unwrap()) .take_while(|line| !line.is_empty())
+    .collect();
 
-
-    let (status_line, filename) = match &request_line[..] {
-        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
-        "GET /sleep HTTP/1.1" => {
+    let get = "GET / HTTP/1.1";
+    let sleep = "GET /sleep HTTP/1.1";
+    let (status_line, file_name) = if http_request[0] == get {
+        ("HTTP/1.1 200 OK", "hello.html")
+        } else if http_request[0] == sleep{
             thread::sleep(Duration::from_secs(10));
             ("HTTP/1.1 200 OK", "hello.html")
-        }
-        _ => ("HTTP/1.1 404 NOT FOUND", "404.html"),
-    };
-
-    let contents = fs::read_to_string(filename).unwrap();
+        } else {
+            ("HTTP/1.1 404 NOT FOUND", "404.html")
+        };
+    let contents = fs::read_to_string(file_name).unwrap();
     let length = contents.len();
     
     let response =
