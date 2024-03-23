@@ -2,6 +2,8 @@ use std::{
     fs,
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
+    thread,
+    time::Duration,
    };
    fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
@@ -16,10 +18,14 @@ use std::{
     .collect();
 
     let get = "GET / HTTP/1.1";
+    let sleep = "GET /sleep HTTP/1.1";
     let (status_line, file_name) = if http_request[0] == get {
         ("HTTP/1.1 200 OK", "hello.html")
+        } else if http_request[0] == sleep{
+            thread::sleep(Duration::from_secs(10));
+            ("HTTP/1.1 200 OK", "hello.html")
         } else {
-        ("HTTP/1.1 404 NOT FOUND", "404.html")
+            ("HTTP/1.1 404 NOT FOUND", "404.html")
         };
     let contents = fs::read_to_string(file_name).unwrap();
     let length = contents.len();

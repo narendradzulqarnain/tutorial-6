@@ -8,3 +8,6 @@ Method `handle_connection` yang baru memberikan *response* dari *request* yang d
 ### Commit 3 Reflection notes
 ![Commit 3 Screen Capture](assets/images/commit3.png)
 Sebelumnya, program akan mengembalikan `hello.html` apapun bentuk requestnya. Oleh karena itu, pada program ditambahkan sebuah *conditional* untuk mengatasi request pada halaman yang tidak dikenali. Pada *chapter* 20, terdapat instruksi untuk implementasinya. Awalnya, terdapat banyak repetisi pada blok *conditional* yang diimplementasikan, yaitu blok `if` dan `else` melakukan *read* dan juga *write*. Oleh karena itu, dilakukan *refactoring* agar kode lebih ringkas.
+
+### Commit 4 Reflection notes
+Halaman web dengan *request* `http://127.0.0.1:7878/sleep` memerlukan waktu lebih lama untuk memuat halamannya. Hal ini disebabkan oleh potongan kode `thread::sleep(Duration::from_secs(10));` menghentikan eksekusi dari *thread* selama 10 detik. 
